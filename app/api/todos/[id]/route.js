@@ -7,46 +7,81 @@ export const PATCH = async (request, { params }) => {
     await connectDB();
 
     const user = await checkAuthentication();
-    if (user instanceof Response) return user;
+    if (user instanceof Response) {
+      return user;
+    }
     
     const { id } = await params;
+    
     const editedTodo = await request.json();
+    
+    if (!id) {
+      return Response.json(
+        { message: "Todo ID is required", status: false },
+        { status: 400 }
+      );
+    }
 
-    const newTodo = await Todo.updateOne({_id: id, userId: user.id}, editedTodo, {
-      new: true,
-    });
-    return Response.json(newTodo);
+    const result = await Todo.updateOne(
+      { _id: id, userId: user.id },
+      editedTodo,
+      { new: true }
+    );
+    
+    if (result.matchedCount === 0) {
+      return Response.json(
+        { message: "Todo not found or unauthorized", status: false },
+        { status: 404 }
+      );
+    }
+    
+    return Response.json(
+      { message: "Todo updated successfully", status: true, result },
+      { status: 200 }
+    );
   } catch (error) {
     return Response.json(
-      { message: "Error updating todo", error },
-      {
-        status: 500,
-      }
+      { message: "Error updating todo", status: false, error: error.message },
+      { status: 500 }
     );
   }
 };
 
 export const DELETE = async (request, { params }) => {
-  await connectDB();
-  const { id } = await params;
-
   try {
+    await connectDB();
+    
+    const { id } = await params;
+    
+    if (!id) {
+      return Response.json(
+        { message: "Todo ID is required", status: false },
+        { status: 400 }
+      );
+    }
 
     const user = await checkAuthentication();
-    if (user instanceof Response) return user;
+    if (user instanceof Response) {
+      return user;
+    }
 
-    await Todo.deleteOne({_id: id, userId:  user.id });
-
-    return new Response(null, {
-      status: 204,
-    });
-
+    const result = await Todo.deleteOne({ _id: id, userId: user.id });
+    
+    if (result.deletedCount === 0) {
+      return Response.json(
+        { message: "Todo not found or unauthorized", status: false },
+        { status: 404 }
+      );
+    }
+    
+    return Response.json(
+      { message: "Todo deleted successfully", status: true },
+      { status: 200 }
+    );
   } catch (error) {
     return Response.json(
-      { message: "Error deleting todo", error },
-      {
-        status: 500,
-      }
+      { message: "Error deleting todo", status: false, error: error.message },
+      { status: 500 }
     );
   }
 };

@@ -6,23 +6,39 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [name, setName] = useState("Ankit");
-  const [email, setEmail] = useState("ankit@gmail.com");
-  const [password, setPassword] = useState("123456");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
+    setSuccess("");
+    
     try {
-      const data = await fetch("/api/register", {
+      const response = await fetch("/api/register", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ name, email, password }),
-      }).then((response) => response.json());
-      console.log(data)
+      });
+      
+      const data = await response.json();
+      
       if (data.status) {
-        return router.push("/");
+        setSuccess("Registration successful! Redirecting...");
+        router.push("/")
+      } else {
+        setError(data.message || "Registration failed. Please try again.");
       }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -40,6 +56,19 @@ export default function RegisterPage() {
         
         <div className="bg-white dark:bg-card rounded-xl shadow-lg border border-gray-200 dark:border-border p-8">
           <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-foreground">Register</h2>
+          
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 dark:bg-red-900/30 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-400 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+          
+          {success && (
+            <div className="mb-4 p-3 bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 rounded-lg text-sm">
+              {success}
+            </div>
+          )}
+          
           <form onSubmit={handleRegister} className="space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
