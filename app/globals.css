@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0 0% 3.9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(0 0% 3.9%);
+  --border: hsl(0 0% 89.8%);
+  --primary: hsl(0 0% 9%);
+  --primary-foreground: hsl(0 0% 98%);
+  --secondary: hsl(0 0% 96.1%);
+  --secondary-foreground: hsl(0 0% 9%);
+}
+
+:root.dark {
+  --background: hsl(223, 24%, 15%);
+  --foreground: hsl(0 0% 98%);
+  --card: hsl(222.2 47.4% 11.2%);
+  --card-foreground: hsl(0 0% 98%);
+  --border: hsl(215 27.9% 16.9%);
+  --primary: hsl(0 0% 98%);
+  --primary-foreground: hsl(0 0% 9%);
+  --secondary: hsl(0 0% 14.9%);
+  --secondary-foreground: hsl(0 0% 98%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Force input styles for light mode */
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  background-color: #f9fafb !important;
+  color: #111827 !important;
+}
+
+/* Force input styles for dark mode */
+:root.dark input[type="email"],
+:root.dark input[type="password"],
+:root.dark input[type="text"] {
+  background-color: #111827 !important;
+  color: #ffffff !important;
+}
+
+/* Fix autofill styles for light mode */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #111827 !important;
+  -webkit-box-shadow: 0 0 0 1000px #f9fafb inset !important;
+  box-shadow: 0 0 0 1000px #f9fafb inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Fix autofill styles for dark mode */
+:root.dark input:-webkit-autofill,
+:root.dark input:-webkit-autofill:hover,
+:root.dark input:-webkit-autofill:focus,
+:root.dark input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0 1000px #111827 inset !important;
+  box-shadow: 0 0 0 1000px #111827 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
